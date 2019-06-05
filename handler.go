@@ -44,9 +44,7 @@ func spawn(w http.ResponseWriter, req *http.Request) {
 	ch := cgi.Handler{
 		Path: config.Bin,
 		Env: func() (env []string) {
-			if config.Username != "" {
-				env = append(env, fmt.Sprintf("REMOTE_USER=%s", config.Username))
-			}
+			env = append(env, fmt.Sprintf("REMOTE_USER=%s", config.Username))
 			env = append(env, "GIT_HTTP_EXPORT_ALL=")
 			env = append(env, fmt.Sprintf("GIT_PROJECT_ROOT=%s", config.Root))
 			return
