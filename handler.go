@@ -11,7 +11,7 @@ func unauthorized(w http.ResponseWriter, reason string) {
 	w.WriteHeader(401)
 	content := "401 Unauthorized\n"
 	if reason != "" {
-		content += "\n" + reason + "\n"
+		content += reason + "\n"
 	}
 	w.Write([]byte(content))
 }

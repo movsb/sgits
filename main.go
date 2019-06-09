@@ -19,6 +19,6 @@ func main() {
 	log.Println("Listen on", config.Listen)
 	err := http.ListenAndServe(config.Listen, nil)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error: cannot listen on %s: %v", config.Listen, err)
 	}
 }

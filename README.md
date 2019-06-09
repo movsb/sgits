@@ -9,13 +9,13 @@ Create a YAML file named `sgits.yml` in the working directory of SGITS.
 For example:
 
 ```yml
-# port to be listened
+# http listen address
 listen: :3558
 
 # root directory of your projects
 root: /home/tao/code
 
-# username to push to remote
+# username to git server
 username: name
 
 # password for username
@@ -26,13 +26,24 @@ Now, SGITS will listen on `:3558` as a GIT server.
 
 ## Accessing the GIT server
 
-```bash
-$ git clone http://localhost:3558/repo
+Because GIT server requires bare repositories (without working directory), you should first create it before pushing:
 
-$ git push origin master
+```sh
+# at projects root
+$ git init --bare repo
 ```
 
-**Note:** No suffix `.git` required.
+Now, you can push and clone:
+
+```sh
+# first add as remote
+$ git remote add sgits http://localhost:3558/repo
+
+# push to remote
+$ git push -u sgits master
+```
+
+**Note:** No suffix `.git` is required.
 
 ## Security
 
