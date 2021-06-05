@@ -41,4 +41,5 @@ func mustParseConfig(file string) {
 	if _, err := os.Stat(config.Bin); err != nil {
 		log.Fatal("error: cannot be found, make sure you have git installed: ", config.Bin)
 	}
+	log.Printf("found git-http-backend: %s", config.Bin)
 }

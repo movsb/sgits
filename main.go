@@ -9,7 +9,7 @@ func handle(w http.ResponseWriter, req *http.Request) {
 	if !auth(w, req) {
 		return
 	}
-	log.Println(req.RequestURI)
+	log.Println(req.Method, req.RequestURI)
 	spawn(w, req)
 }
 

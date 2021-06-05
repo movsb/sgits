@@ -43,6 +43,7 @@ func auth(w http.ResponseWriter, req *http.Request) bool {
 func spawn(w http.ResponseWriter, req *http.Request) {
 	ch := cgi.Handler{
 		Path: config.Bin,
+		Dir:  `.`,
 		Env: func() (env []string) {
 			env = append(env, fmt.Sprintf("REMOTE_USER=%s", config.Username))
 			env = append(env, "GIT_HTTP_EXPORT_ALL=")
@@ -50,5 +51,28 @@ func spawn(w http.ResponseWriter, req *http.Request) {
 			return
 		}(),
 	}
+
+	// net/http/cgi/host.go:122
+	// Chunked request bodies are not supported by CGI.
+	//
+	// error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400
+	// fatal: the remote end hung up unexpectedly
+	//
+	// https://github.com/git/git/blob/master/Documentation/config/http.txt#L216
+	// https://gitlab.com/gitlab-org/gitlab/-/issues/17649
+	// https://github.com/golang/go/issues/5613
+	fixChunked(req)
+
 	ch.ServeHTTP(w, req)
+}
+
+func fixChunked(req *http.Request) {
+	if len(req.TransferEncoding) > 0 && req.TransferEncoding[0] == `chunked` {
+		// hacking!
+		req.TransferEncoding = nil
+		req.Header.Set(`Transfer-Encoding`, `chunked`)
+
+		// let cgi use Body.
+		req.ContentLength = -1
+	}
 }
